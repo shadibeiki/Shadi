@@ -1,0 +1,27 @@
+import gurobipy 
+from gurobipy import *
+from gurobipy import quicksum,Model,GRB
+
+
+EX12_30 = Model()
+
+
+#Definition of Variables
+x1 = EX12_30.addVar( vtype = GRB.BINARY )
+x2 = EX12_30.addVar( vtype = GRB.BINARY )
+x3 = EX12_30.addVar( vtype = GRB.BINARY )
+
+#Definition of Constraints
+con1 = EX12_30.addConstr(17*x1 + 10*x2 + 14*x3 <= 19)
+
+
+EX12_30.setObjective(51*x1 + 72*x2 + 41*x3 ,  GRB.MAXIMIZE)
+
+
+EX12_30.optimize()
+EX12_30.write("EX12_30.lp")
+EX12_30.write("EX12_30.sol") 
+print(EX12_30.ObjVal)
+print('x1 =', x1.X)
+print('x2 =', x2.X)
+print('x3 =', x3.X)
