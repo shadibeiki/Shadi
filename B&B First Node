@@ -1,0 +1,48 @@
+import gurobipy 
+from gurobipy import *
+from gurobipy import quicksum,Model,GRB
+
+
+EX12_30C = Model()
+
+
+#Definition of Variables
+x1 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+x2 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+x3 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+
+#Definition of Constraints
+con1 = EX12_30C.addConstr(17*x1 + 10*x2 + 14*x3 <= 19)
+
+
+EX12_30C.setObjective(51*x1 + 72*x2 + 41*x3 ,  GRB.MAXIMIZE)
+
+
+EX12_30C.optimize()
+print(EX12_30C.ObjVal)
+print('x1 =', x1.X)
+print('x2 =', x2.X)
+print('x3 =', x3.X)
+ErgebnisListe = [x1.X , x2.X , x3.X ]
+print(ErgebnisListe)
+
+ContinuousVars = []
+for Ergebnis in ErgebnisListe:
+    if Ergebnis < 1 and Ergebnis > 0:
+        ContinuousVars.append(Ergebnis)
+        
+Minimum = 1
+if len(ContinuousVars) == 0:
+    Incumbent = ErgebnisListe
+    
+else :
+    for i in ContinuousVars:
+        Min = min(i , 1-i)
+        if Min < Minimum:
+            Minimum = Min
+            BranchingPoint = i
+        
+        
+print(ErgebnisListe)
+print('BP is : ' , BranchingPoint)
+print('CVars are : ' ,ContinuousVars)
