@@ -1,0 +1,80 @@
+import gurobipy 
+from gurobipy import *
+from gurobipy import quicksum,Model,GRB
+
+
+EX12_30C = Model()
+
+
+#Definition of Variables
+C0 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+C1 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+C2 = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+
+#Definition of Constraints
+con1 = EX12_30C.addConstr(17*C0 + 10*C1 + 14*C2 <= 19)
+
+
+EX12_30C.setObjective(51*C0 + 72*C1 + 41*C2 ,  GRB.MAXIMIZE)
+
+
+EX12_30C.optimize()
+print(EX12_30C.ObjVal)
+print('C0 =', C0.X)
+print('C1 =', C1.X)
+print('C2 =', C2.X)
+
+
+ErgebnisDic = {'C0': C0.X , 'C1' : C1.X , 'C2' : C2.X }
+print('ErgebnisDic is' , ErgebnisDic)
+
+ContinuousVars = []
+for Ergebnis in ErgebnisDic:
+    if ErgebnisDic[Ergebnis] < 1 and ErgebnisDic[Ergebnis] > 0:
+        ContinuousVars.append(Ergebnis)
+
+print('ContinuousVars are' , ContinuousVars)
+
+
+Minimum = 1
+if len(ContinuousVars) == 0:
+    Incumbent = ErgebnisDic
+    
+
+
+else :
+    for i in ContinuousVars:
+        j = ErgebnisDic[i]
+        Min = min(j , 1-j)
+        if Min < Minimum:
+            Minimum = Min
+            BranchingPoint = i
+        
+        
+print(ErgebnisDic)
+print('Branching Point is : ' , BranchingPoint)
+print('CVars are : ' , ContinuousVars)
+
+
+
+
+#Start of Branching
+
+
+#Definition of Variables
+'''
+k = {}
+for v in EX12_30C.getVars():
+    k[v.VarName] = SecondNode.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+    print(k)
+    #if k == BranchingPoint:
+''' 
+
+Points = [C0 , C1 , C2]
+for c in Points:
+    if c.VarName == BranchingPoint:
+          Points[Points.index(c)] = 1
+''' else :
+          Points[Points.index(c)] = EX12_30C.addVar( vtype = GRB.CONTINUOUS , lb = 0 , ub = 1)
+'''            
+print(Points)
